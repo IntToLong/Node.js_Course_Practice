@@ -1,0 +1,22 @@
+{
+	"name": "express-hw",
+	"version": "1.0.0",
+	"description": "Swagger basic practice",
+	"main": "src/index.js",
+	"scripts": {
+		"start": "node .",
+		"start:dev": "nodemon --watch src",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Nataliia Liubynets",
+	"license": "ISC",
+	"dependencies": {
+		"express": "^4.18.2",
+		"swagger-jsdoc": "^6.2.8",
+		"swagger-ui": "^5.9.0",
+		"swagger-ui-express": "^5.0.0"
+	},
+	"devDependencies": {
+		"nodemon": "^3.0.1"
+	}
+}
