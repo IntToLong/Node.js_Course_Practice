@@ -29,7 +29,7 @@ const router = express.Router();
  */
 
 router.get('/health-check', function (req, res) {
-	res.json({ status: 'Server is running!' });
+	res.status(200).json({ status: 'Server is running!' });
 });
 
 /**
@@ -68,7 +68,7 @@ router.get('/health-check', function (req, res) {
  */
 
 router.post('/health-set', function (req, res) {
-	res.json({ status: `New Server status!` });
+	res.status(201).json({ status: `New Server status!` });
 });
 
 router.use((req, res) => {
