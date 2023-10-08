@@ -4,8 +4,9 @@
 	"description": "Swagger basic practice",
 	"main": "src/index.js",
 	"scripts": {
-		"start": "node .",
-		"start:dev": "nodemon --watch src",
+		"start": "npm run build && node build/index.js",
+		"start:dev": "npx nodemon",
+		"build": "rimraf ./build && tsc",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "Nataliia Liubynets",
@@ -21,6 +22,8 @@
 		"@types/node": "^20.8.3",
 		"@types/swagger-ui-express": "^4.1.4",
 		"nodemon": "^3.0.1",
+		"rimraf": "^5.0.5",
+		"ts-node": "^10.9.1",
 		"typescript": "^5.2.2"
 	}
 }

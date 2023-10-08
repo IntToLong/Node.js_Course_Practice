@@ -67,3 +67,4 @@ router.post('/health-set', (req, res) => {
     res.status(201).json({ status: 'New Server status!' });
 });
 exports.default = router;
+//# sourceMappingURL=routes.js.map

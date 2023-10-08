@@ -19,3 +19,4 @@ const options = {
 };
 const swaggerSpec = swaggerJsdoc(options);
 module.exports = swaggerSpec;
+//# sourceMappingURL=swaggerConfig.js.map
