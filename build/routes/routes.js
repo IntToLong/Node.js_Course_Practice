@@ -1,5 +1,7 @@
-const express = require('express');
-const router = express.Router();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const router = (0, express_1.Router)();
 /**
  * @swagger
  * /health-check:
@@ -19,19 +21,14 @@ const router = express.Router();
  *                              type: string
  *                      example:
  *                          status: "Server is running!"
- *
  *      404:
  *          description: Not Found
  *      500:
  *          description: Server Error
- *
- *
  */
-
-router.get('/health-check', function (req, res) {
-	res.json({ status: 'Server is running!' });
+router.get('/health-check', (req, res) => {
+    res.status(200).json({ status: 'Server is running!' });
 });
-
 /**
  * @swagger
  * /health-set:
@@ -66,9 +63,7 @@ router.get('/health-check', function (req, res) {
  *      404:
  *          description: Not Found.
  */
-
-router.post('/health-set', function (req, res) {
-	res.json({ status: `New Server status!` });
+router.post('/health-set', (req, res) => {
+    res.status(201).json({ status: 'New Server status!' });
 });
-
-module.exports = router;
+exports.default = router;
