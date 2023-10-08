@@ -71,4 +71,8 @@ router.post('/health-set', function (req, res) {
 	res.json({ status: `New Server status!` });
 });
 
+router.use((req, res) => {
+	res.status(404).send('<h1>Page not found</h1>')
+})
+
 module.exports = router;
