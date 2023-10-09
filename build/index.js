@@ -9,7 +9,7 @@ const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swaggerConfig_1 = __importDefault(require("./swaggerConfig"));
 const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerConfig_1.default));
 app.use(body_parser_1.default.json());
 app.use(routes_1.default);

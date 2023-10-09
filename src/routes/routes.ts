@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 
-const router = Router();
+const router: Router = Router();
 
 /**
  * @swagger
@@ -26,8 +26,8 @@ const router = Router();
  *      500:
  *          description: Server Error
  */
-router.get('/health-check', (req: Request, res: Response) => {
-	(res as any).status(200).json({ status: 'Server is running!' });
+router.get('/health-check', (req: Request, res: Response): void => {
+  res.status(200).json({ status: 'Server is running!' });
 });
 
 /**
@@ -64,8 +64,12 @@ router.get('/health-check', (req: Request, res: Response) => {
  *      404:
  *          description: Not Found.
  */
-router.post('/health-set', (req: Request, res: Response) => {
-	(res as any).status(201).json({ status: 'New Server status!' });
+router.post('/health-set', (req: Request, res: Response): void => {
+  if (typeof req.body.status === 'string') {
+    res.status(201).json({ status: 'New Server status!' });
+  } else {
+    res.status(400).send('Bad request. Server status should be string type.');
+  }
 });
 
 export default router;

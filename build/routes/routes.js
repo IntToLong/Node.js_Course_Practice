@@ -64,7 +64,12 @@ router.get('/health-check', (req, res) => {
  *          description: Not Found.
  */
 router.post('/health-set', (req, res) => {
-    res.status(201).json({ status: 'New Server status!' });
+    if (typeof req.body.status === 'string') {
+        res.status(201).json({ status: 'New Server status!' });
+    }
+    else {
+        res.status(400).send('Bad request. Server status should be string type.');
+    }
 });
 exports.default = router;
 //# sourceMappingURL=routes.js.map

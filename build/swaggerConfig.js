@@ -1,5 +1,9 @@
 "use strict";
-const swaggerJsdoc = require('swagger-jsdoc');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
 const options = {
     failOnErrors: true,
     definition: {
@@ -17,6 +21,6 @@ const options = {
     },
     apis: ['./src/routes/*.ts'],
 };
-const swaggerSpec = swaggerJsdoc(options);
-module.exports = swaggerSpec;
+const swaggerSpec = (0, swagger_jsdoc_1.default)(options);
+exports.default = swaggerSpec;
 //# sourceMappingURL=swaggerConfig.js.map
