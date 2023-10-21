@@ -28,7 +28,7 @@ const router = express.Router();
  *
  */
 
-router.get('/health-check', function (req, res) {
+router.get('/health-check', (req, res) => {
 	res.status(200).json({ status: 'Server is running!' });
 });
 
@@ -67,7 +67,7 @@ router.get('/health-check', function (req, res) {
  *          description: Not Found.
  */
 
-router.post('/health-set', function (req, res) {
+router.post('/health-set', (req, res) => {
 	res.status(201).json({ status: `New Server status!` });
 });
 
