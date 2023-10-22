@@ -7,6 +7,6 @@ const GenreSchema = new mongoose.Schema({
   },
 });
 
-const GenreModel = mongoose.model('Genre', GenreSchema);
+const Genre = mongoose.model('Genre', GenreSchema);
 
-export default GenreModel;
+export default Genre;
