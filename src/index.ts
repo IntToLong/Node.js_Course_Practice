@@ -4,7 +4,8 @@ import swaggerUi from 'swagger-ui-express';
 
 import swaggerJsdoc from './swaggerConfig';
 import constants from './constants';
-import routes from './routes/movie.router';
+import movieRoute from './routes/movie.route';
+import genreRoute from './routes/genre.route';
 import errorHandler from './middleware/errorHandler';
 import connectDB from './db/config';
 
@@ -16,7 +17,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsdoc));
 
 app.use(bodyParser.json());
 
-app.use(routes);
+app.use('/movies', genreRoute);
+app.use(movieRoute);
 
 app.use(errorHandler);
 
