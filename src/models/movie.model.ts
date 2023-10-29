@@ -1,6 +1,12 @@
-import mongoose from 'mongoose';
+import { Schema, model } from 'mongoose';
+interface IMovie {
+  title: string;
+  description: string;
+  releaseDate: Date;
+  genre: string[];
+}
 
-const MovieSchema = new mongoose.Schema({
+const MovieSchema = new Schema<IMovie>({
   title: {
     type: String,
     required: true,
@@ -15,10 +21,13 @@ const MovieSchema = new mongoose.Schema({
   },
   genre: {
     type: [String],
+    validate: {
+      validator: (arr: string[]) => arr.length > 0,
+    },
     required: true,
   },
 });
 
-const Movie = mongoose.model('Movie', MovieSchema);
+const Movie = model<IMovie>('Movie', MovieSchema);
 
 export default Movie;

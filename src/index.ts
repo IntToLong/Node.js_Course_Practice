@@ -17,7 +17,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsdoc));
 
 app.use(bodyParser.json());
 
-app.use('/movies', genreRoute);
+app.use(genreRoute);
 app.use(movieRoute);
 
 app.use(errorHandler);

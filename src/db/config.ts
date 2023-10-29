@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import constants from '../constants';
-import mongoose from 'mongoose';
+import {connect, connection} from 'mongoose';
 
 export default function connectDB(): void {
   try {
-    mongoose.connect(constants.URIDB);
+    connect(constants.URIDB);
   } catch (err: unknown) {
     console.error((err as Error).message);
     process.exit(1);
   }
-  const dbConnection = mongoose.connection;
+  const dbConnection = connection;
   dbConnection.once('open', (_) => {
     console.log(`Database connected: ${constants.URIDB}`);
   });
