@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-interface IMovie {
+export interface IMovie {
   title: string;
   description: string;
   releaseDate: Date;
