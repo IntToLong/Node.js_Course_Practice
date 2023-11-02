@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 
-interface IGenre {
+export interface IGenre {
   name: string;
 }
 
