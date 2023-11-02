@@ -15,20 +15,6 @@ const options = {
       },
     ],
   },
-  components: {
-    schemas: {
-      Genre: {
-        type: 'object',
-        properties: {
-          name: {
-            type: 'string',
-            description: 'The name of the genre.',
-            example: 'Sci-Fi'
-          },
-        },
-      },
-    },
-  },
   apis: ['./src/routes/*.ts'],
 };
 
