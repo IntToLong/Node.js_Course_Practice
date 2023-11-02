@@ -21,9 +21,6 @@ const MovieSchema = new Schema<IMovie>({
   },
   genre: {
     type: [String],
-    validate: {
-      validator: (arr: string[]) => arr.length > 0,
-    },
     required: true,
   },
 });

@@ -1,11 +1,14 @@
 import { NextFunction, Request, Response, Router } from 'express';
+
 import Genre from '../models/genre.model';
+import { genreSchema } from '../middleware/data_validation/schemas';
 
 const router: Router = Router();
+
 /**
  * @swagger
- * components: 
- *    schemas: 
+ * components:
+ *    schemas:
  *      Genre:
  *       type: object
  *       properties:
@@ -34,8 +37,8 @@ const router: Router = Router();
  *               example:
  *                      name: "Sci-Fi"
  *     responses:
- *       '201':
- *         description: Created
+ *       '200':
+ *         description: Successful response.
  *       '400':
  *         description: Invalid request.
  *         content:
@@ -63,13 +66,19 @@ const router: Router = Router();
 // Create a new genre
 router.post('/genres', async (req: Request, res: Response, next: NextFunction) => {
   const { name } = req.body;
-  try {
-    const genre = new Genre({ name });
-    await genre.save();
-    res.send(genre);
-  } catch (error: unknown) {
-    next(error);
+  const { error } = genreSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  } else {
+    try {
+      const genre = new Genre({ name });
+      await genre.save();
+      res.send(genre);
+    } catch (error: unknown) {
+      next(error);
+    }
   }
+  
 });
 /**
  * @swagger
@@ -113,7 +122,6 @@ router.get('/genres', async (req: Request, res: Response, next: NextFunction) =>
     next(error);
   }
 });
-
 
 /**
  * @swagger
