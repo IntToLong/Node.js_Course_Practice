@@ -1,7 +1,7 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { Request, Response, Router } from 'express';
 
-import Movie from '../models/movie.model';
-import { movieSchema } from '../middleware/data_validation/schemas';
+import { movieController } from '../controllers/movie.controller';
+
 
 const router: Router = Router();
 
@@ -70,21 +70,7 @@ const router: Router = Router();
  */
 
 // Create a new movie
-router.post('/movies', async (req: Request, res: Response, next: NextFunction) => {
-  const { title, description, releaseDate, genre } = req.body;
-  const { error } = movieSchema.validate(req.body);
-  if (error) {
-    return res.status(400).json({ error: error.details[0].message });
-  } else {
-    try {
-      const movie = new Movie({ title, description, releaseDate, genre });
-      await movie.save();
-      res.send(movie);
-    } catch (error: unknown) {
-      next(error);
-    }
-  }
-});
+router.post('/movies', movieController.createMovie);
 
 /**
  * @swagger
@@ -120,14 +106,7 @@ router.post('/movies', async (req: Request, res: Response, next: NextFunction) =
  *                 error: "Internal server error."
  */
 // Get all movies
-router.get('/movies', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const movies = await Movie.find({});
-    res.send(movies);
-  } catch (error: unknown) {
-    next(error);
-  }
-});
+router.get('/movies', movieController.getAllMovies);
 
 /**
  * @swagger
@@ -177,17 +156,7 @@ router.get('/movies', async (req: Request, res: Response, next: NextFunction) =>
  */
 
 // Update a movie
-router.put('/movies/:id', async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
-  const { title, description, releaseDate, genre } = req.body;
-
-  try {
-    const movie = await Movie.findByIdAndUpdate(id, { title, description, releaseDate, genre }, { new: true });
-    res.send(movie);
-  } catch (error: unknown) {
-    next(error);
-  }
-});
+router.put('/movies/:id', movieController.updateMovie);
 
 /**
  * @swagger
@@ -230,15 +199,7 @@ router.put('/movies/:id', async (req: Request, res: Response, next: NextFunction
  *                 error: "Internal server error."
  */
 // Delete a movie
-router.delete('/movies/:id', async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
-  try {
-    const movie = await Movie.findByIdAndDelete(id);
-    res.send(movie);
-  } catch (error: unknown) {
-    next(error);
-  }
-});
+router.delete('/movies/:id', movieController.deleteMovie);
 
 /**
  * @swagger
@@ -281,15 +242,7 @@ router.delete('/movies/:id', async (req: Request, res: Response, next: NextFunct
  *                 error: "Internal server error."
  */
 // Searching for Movies by Genre
-router.get('/movies/genre/:genreName', async (req: Request, res: Response, next: NextFunction) => {
-  const { genreName } = req.params;
-  try {
-    const movies = await Movie.find({ genre: { $in: new RegExp(genreName, 'i') } });
-    res.send(movies);
-  } catch (error: unknown) {
-    next(error);
-  }
-});
+router.get('/movies/genre/:genreName', movieController.searchMoviesByGenre);
 
 /**
  * @swagger

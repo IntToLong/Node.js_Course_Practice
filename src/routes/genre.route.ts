@@ -1,7 +1,5 @@
-import { NextFunction, Request, Response, Router } from 'express';
-
-import Genre from '../models/genre.model';
-import { genreSchema } from '../middleware/data_validation/schemas';
+import { Router } from 'express';
+import { genreController } from '../controllers/genre.controller';
 
 const router: Router = Router();
 
@@ -64,22 +62,7 @@ const router: Router = Router();
  */
 
 // Create a new genre
-router.post('/genres', async (req: Request, res: Response, next: NextFunction) => {
-  const { name } = req.body;
-  const { error } = genreSchema.validate(req.body);
-  if (error) {
-    return res.status(400).json({ error: error.details[0].message });
-  } else {
-    try {
-      const genre = new Genre({ name });
-      await genre.save();
-      res.send(genre);
-    } catch (error: unknown) {
-      next(error);
-    }
-  }
-  
-});
+router.post('/genres', genreController.createGenre);
 /**
  * @swagger
  * /genres:
@@ -114,14 +97,15 @@ router.post('/genres', async (req: Request, res: Response, next: NextFunction) =
  *                 error: "Internal server error."
  */
 // Get all genres
-router.get('/genres', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const genres = await Genre.find({});
-    res.send(genres);
-  } catch (error: unknown) {
-    next(error);
-  }
-});
+// router.get('/genres', async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     const genres = await Genre.find({});
+//     res.send(genres);
+//   } catch (error: unknown) {
+//     next(error);
+//   }
+// });
+router.get('/genres', genreController.getAllGenres);
 
 /**
  * @swagger
@@ -176,16 +160,7 @@ router.get('/genres', async (req: Request, res: Response, next: NextFunction) =>
  */
 
 // Update a genre
-router.put('/genres/:id', async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
-  const { name } = req.body;
-  try {
-    const genre = await Genre.findByIdAndUpdate(id, { name }, { new: true });
-    res.send(genre);
-  } catch (error: unknown) {
-    next(error);
-  }
-});
+router.put('/genres/:id', genreController.updateGenre);
 
 /**
  * @swagger
@@ -228,14 +203,6 @@ router.put('/genres/:id', async (req: Request, res: Response, next: NextFunction
  *                 error: "Internal server error."
  */
 // Delete a genre
-router.delete('/genres/:id', async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
-  try {
-    const genre = await Genre.findByIdAndDelete(id);
-    res.send(genre);
-  } catch (error: unknown) {
-    next(error);
-  }
-});
+router.delete('/genres/:id', genreController.deleteGenre);
 
 export default router;
