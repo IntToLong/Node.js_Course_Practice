@@ -9,7 +9,7 @@ import genreRoute from './routes/genre.route';
 import errorHandler from './middleware/errorHandler';
 import connectDB from './db/config';
 
-const app: Application = express();
+export const app: Application = express();
 
 connectDB();
 
@@ -22,6 +22,6 @@ app.use(movieRoute);
 
 app.use(errorHandler);
 
-app.listen(constants.PORT, (): void => {
+export const server = app.listen(constants.PORT, (): void => {
   console.log(`Server is listening on port ${constants.PORT}`);
 });
