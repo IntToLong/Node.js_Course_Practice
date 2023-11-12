@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from 'express';
 
-class AppError extends Error {
+export class AppError extends Error {
   statusCode: number;
-
+  
   constructor(statusCode: number, message: string) {
     super(message);
 
@@ -17,7 +17,7 @@ class AppError extends Error {
 const errorHandler = (error: AppError, req: Request, res: Response, next: NextFunction) => {
   console.log(`error ${error.message}`);
   const status = error.statusCode || 500;
-  res.status(status).send(error.message);
+  res.status(status).json({ error: error.message });
 };
 
 export default errorHandler;

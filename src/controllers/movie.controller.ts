@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import { movieSchema } from '../middleware/data_validation/schemas';
+import { movieJoiSchema } from '../models/models.joi.validation';
 import Movie from '../models/movie.model';
 
 export const createMovie = async (req: Request, res: Response, next: NextFunction) => {
   const { title, description, releaseDate, genre } = req.body;
-  const { error } = movieSchema.validate(req.body);
+  const { error } = movieJoiSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   } else {

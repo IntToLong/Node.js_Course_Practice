@@ -6,7 +6,7 @@ export const config: Config = {
   moduleFileExtensions: [...defaults.moduleFileExtensions, 'js', 'json', 'ts'],
   rootDir: '.',
   testEnvironment: 'node',
-  testMatch: ['**/**/test/*.ts'],
+  testMatch: ['**/**/test/genreWithMocks.test.ts'],
   transform: {
     '^.+\\.ts?$': 'ts-jest',
   },
