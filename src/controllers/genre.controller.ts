@@ -44,7 +44,6 @@ export const deleteGenre = async (req: Request, res: Response, next: NextFunctio
     if (id) {
       (error as AppError).statusCode = 404;
     }
-    console.error('Error:', error);
     next(error);
   }
 };

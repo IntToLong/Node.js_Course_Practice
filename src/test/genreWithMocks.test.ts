@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
+//@ts-nocheck
 import supertest from 'supertest';
 import { describe, expect, test } from '@jest/globals';
 import Genre from '../models/genre.model';
@@ -20,31 +20,33 @@ const genreRecords = [
     __v: 0,
   },
 ];
+const incorrectId = 'incorrectId';
 
 describe('GET /genres', () => {
   test('should return all genres', async () => {
-    const mock = jest
-      .spyOn(Genre, 'find')
-      //@ts-ignore
-      .mockReturnValueOnce(genreRecords);
+    jest.spyOn(Genre, 'find').mockReturnValueOnce(genreRecords);
     const { statusCode, body } = await supertest(app).get('/genres');
     expect(statusCode).toBe(200);
     expect(body).toStrictEqual(genreRecords);
+  });
+  test('server error', async () => {
+    jest.spyOn(Genre, 'find').mockImplementation(() => {
+      throw new Error();
+    });
+    const { statusCode } = await supertest(app).get('/genres');
+    expect(statusCode).toBe(500);
   });
 });
 
 describe('POST /genres', () => {
   describe('create a genre with proper body', () => {
-    test('should return 200', async () => {
+    test('should return 200 and new genre', async () => {
       const genrePayload = {
         _id: genreId,
         name: 'Drama',
         __v: 0,
       };
-      const mock = jest
-        .spyOn(Genre, 'create')
-        //@ts-ignore
-        .mockReturnValueOnce(genrePayload);
+      const mock = jest.spyOn(Genre, 'create').mockReturnValueOnce(genrePayload);
       const input = {
         name: 'Drama',
       };
@@ -55,12 +57,32 @@ describe('POST /genres', () => {
     });
   });
   describe('create a genre with invalid body', () => {
-    test('should return 400 and error message', async () => {
-      const input = {};
-      const { statusCode, body } = await supertest(app).post('/genres').send(input);
-      expect(statusCode).toEqual(400);
-      expect(body).toEqual({ error: '"name" is required' });
+    describe('body without name', () => {
+      test('should return 400 and error message "name" is required"', async () => {
+        const input = {};
+        const { statusCode, body } = await supertest(app).post('/genres').send(input);
+        expect(statusCode).toEqual(400);
+        expect(body).toEqual({ error: '"name" is required' });
+      });
     });
+    describe('body with empty "name"', () => {
+      test('should return 400 and error message "name" is not allowed to be empty"', async () => {
+        const input = { name: '' };
+        const { statusCode, body } = await supertest(app).post('/genres').send(input);
+        expect(statusCode).toEqual(400);
+        expect(body).toEqual({ error: '"name" is not allowed to be empty' });
+      });
+    });
+  });
+  test('server error', async () => {
+    const input = {
+      name: 'Drama',
+    };
+    jest.spyOn(Genre, 'create').mockImplementation(() => {
+      throw new Error();
+    });
+    const { statusCode } = await supertest(app).post('/genres').send(input);
+    expect(statusCode).toBe(500);
   });
 });
 
@@ -71,22 +93,48 @@ describe('DELETE /genres', () => {
     __v: 0,
   };
   describe('delete genre by Id', () => {
-    describe('correct Id', () => {
+    describe('request with correct Id', () => {
       test('should return 200 and deleted genre', async () => {
-        const mockFindById = jest
-          .spyOn(Genre, 'findById')
-          //@ts-ignore
-          .mockReturnValueOnce(genreToDeletion);
-        const mockDelete = jest
-          .spyOn(Genre, 'findByIdAndDelete')
-          //@ts-ignore
-          .mockReturnValueOnce(genreToDeletion);
-        const response = await supertest(app).delete('/genres').send(genreId);
-        console.log('response', response);
+        jest.spyOn(Genre, 'findByIdAndDelete').mockReturnValueOnce(genreToDeletion);
         const { statusCode, body } = await supertest(app).delete(`/genres/${genreId}`).send(genreId);
         expect(statusCode).toBe(200);
         expect(body).toEqual(genreToDeletion);
       });
+    });
+    describe('request with incorrect Id', () => {
+      test('should return 404', async () => {
+        jest.spyOn(Genre, 'findByIdAndDelete');
+        const { statusCode } = await supertest(app).delete(`/genres/${incorrectId}`).send(incorrectId);
+        expect(statusCode).toBe(404);
+      });
+    });
+  });
+});
+
+describe('PUT /genres', () => {
+  const updatedGenre = {
+    _id: genreId,
+    name: 'Updated genre',
+    __v: 0,
+  };
+  const newName = {
+    name: 'Updated genre',
+  };
+  describe('update a genre with proper body and id', () => {
+    test('should return 200 and updated genre', async () => {
+      const mockUpdate = jest.spyOn(Genre, 'findByIdAndUpdate').mockReturnValueOnce(updatedGenre);
+      const { statusCode, body } = await supertest(app).put(`/genres/${genreId}`).send(newName);
+      expect(statusCode).toBe(200);
+      expect(mockUpdate).toBeCalledWith(genreId, newName, { new: true });
+      expect(body).toStrictEqual(updatedGenre);
+    });
+  });
+  describe('request with incorrect Id', () => {
+    test('should return 404', async () => {
+      const mockUpdate = jest.spyOn(Genre, 'findByIdAndUpdate');
+      const { statusCode } = await supertest(app).put(`/genres/${incorrectId}`).send(newName);
+      expect(statusCode).toBe(404);
+      expect(mockUpdate).toBeCalledWith(incorrectId, newName, { new: true });
     });
   });
 });

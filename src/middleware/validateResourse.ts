@@ -5,7 +5,7 @@ const validate = (schema: Joi.ObjectSchema) => (req: Request, res: Response, nex
   try {
     const { error } = schema.validate(req.body);
     if (error) {
-      return res.status(400).json({ error: error.details[0].message });
+      return res.status(400).json({ error: error.message });
     }
     next();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
