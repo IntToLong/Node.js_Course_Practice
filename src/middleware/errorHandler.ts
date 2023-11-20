@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Request, Response, NextFunction } from 'express';
 
 class AppError extends Error {
   statusCode: number;
@@ -13,7 +14,7 @@ class AppError extends Error {
   }
 }
 
-const errorHandler = (error: AppError, req: Request, res: Response) => {
+const errorHandler = (error: AppError, req: Request, res: Response, next: NextFunction) => {
   console.log(`error ${error.message}`);
   const status = error.statusCode || 500;
   res.status(status).send(error.message);
