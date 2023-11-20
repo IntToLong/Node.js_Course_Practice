@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { genreController } from '../controllers/genre.controller';
 import { genreJoiSchema } from '../models/models.joi.validation';
-import validateResource from '../middleware/validateResourse';
+import validateResource from '../middleware/validateResource';
 
 const router: Router = Router();
 

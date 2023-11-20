@@ -1,83 +1,140 @@
-// import request from 'supertest';
-// import { connection, connect, disconnect } from 'mongoose';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+//@ts-nocheck
+import supertest from 'supertest';
+import { describe, expect, test } from '@jest/globals';
+import Genre from '../models/genre.model';
+import createServer from '../utils/server';
+import mongoose from 'mongoose';
 
-// import { MongoMemoryServer } from 'mongodb-memory-server';
-// import { describe, expect, test } from '@jest/globals';
-// import createServer from '../utils/server';
-// import { getAllGenres } from '../controllers/genre.controller';
-// import { Request, Response } from 'express';
-// import Genre from '../models/genre.model';
+const app = createServer();
+const genreId = new mongoose.Types.ObjectId().toString();
+const genreRecords = [
+  {
+    _id: '653ad072352c17eade569c5a',
+    name: 'Drama',
+    __v: 0,
+  },
+  {
+    _id: '653ad07e352c17eade569c5c',
+    name: 'Comedy',
+    __v: 0,
+  },
+];
+const nonExistentId = 'non-existent Id';
 
-// const app = createServer();
+describe('GET /genres', () => {
+  test('should return all genres', async () => {
+    jest.spyOn(Genre, 'find').mockReturnValueOnce(genreRecords);
+    const { statusCode, body } = await supertest(app).get('/genres');
+    expect(statusCode).toBe(200);
+    expect(body).toStrictEqual(genreRecords);
+  });
+  test('should return server error', async () => {
+    jest.spyOn(Genre, 'find').mockImplementation(() => {
+      throw new Error();
+    });
+    const { statusCode } = await supertest(app).get('/genres');
+    expect(statusCode).toBe(500);
+  });
+});
 
-// /* Connecting to the database before each test. */
-// beforeAll(async () => {
-//   const mongoServer = await MongoMemoryServer.create();
-//   await connect(mongoServer.getUri());
-// });
+describe('POST /genres', () => {
+  describe('create a genre with a proper request body', () => {
+    test('should return status code 200 and new genre', async () => {
+      const genrePayload = {
+        _id: genreId,
+        name: 'Drama',
+        __v: 0,
+      };
+      const mock = jest.spyOn(Genre, 'create').mockReturnValueOnce(genrePayload);
+      const input = {
+        name: 'Drama',
+      };
+      const { statusCode, body } = await supertest(app).post('/genres').send(input);
+      expect(statusCode).toEqual(200);
+      expect(body).toEqual(genrePayload);
+      expect(mock).toHaveBeenCalledWith(input);
+    });
+  });
+  describe('not create a genre with invalid request body', () => {
+    describe('body without name', () => {
+      test('should return status code 400 and error message "name" is required"', async () => {
+        const input = {};
+        const { statusCode, body } = await supertest(app).post('/genres').send(input);
+        expect(statusCode).toEqual(400);
+        expect(body).toEqual({ error: '"name" is required' });
+      });
+    });
+    describe('body with empty "name"', () => {
+      test('should return status code 400 and error message "name" is not allowed to be empty"', async () => {
+        const input = { name: '' };
+        const { statusCode, body } = await supertest(app).post('/genres').send(input);
+        expect(statusCode).toEqual(400);
+        expect(body).toEqual({ error: '"name" is not allowed to be empty' });
+      });
+    });
+  });
+  test('should return server error', async () => {
+    const input = {
+      name: 'Drama',
+    };
+    jest.spyOn(Genre, 'create').mockImplementation(() => {
+      throw new Error();
+    });
+    const { statusCode } = await supertest(app).post('/genres').send(input);
+    expect(statusCode).toBe(500);
+  });
+});
 
-// /* Dropping the database and closing connection after each test. */
-// afterAll(async () => {
-//   await disconnect();
-//   await connection.close();
-// });
+describe('DELETE /genres/:id', () => {
+  const genreToBeDeleted = {
+    _id: genreId,
+    name: 'Comedy',
+    __v: 0,
+  };
+  describe('delete genre by Id', () => {
+    describe('request with correct Id', () => {
+      test('should return status code 200 and deleted genre', async () => {
+        jest.spyOn(Genre, 'findByIdAndDelete').mockReturnValueOnce(genreToBeDeleted);
+        const { statusCode, body } = await supertest(app).delete(`/genres/${genreId}`).send(genreId);
+        expect(statusCode).toBe(200);
+        expect(body).toEqual(genreToBeDeleted);
+      });
+    });
+    describe('request with non-existent Id', () => {
+      test('should return status code 404', async () => {
+        jest.spyOn(Genre, 'findByIdAndDelete');
+        const { statusCode } = await supertest(app).delete(`/genres/${nonExistentId}`).send(nonExistentId);
+        expect(statusCode).toBe(404);
+      });
+    });
+  });
+});
 
-// // describe('GET /genres', () => {
-// //   const genreRecords = [
-// //     {
-// //       name: 'Drama',
-// //     },
-// //     {
-// //       name: 'Comedy',
-// //     },
-// //   ];
-// //   const mock = jest.spyOn(Genre, 'find');
-// //   mock.mockReturnValue(genreRecords);
-// //   const mReq = {} as Request;
-// //   const mRes = { send: jest.fn() };
-// //   const mNext = jest.fn();
-// //   test('should responds with json', async () => {
-// //     const response = await request(app).get('/genres');
-// //     expect(response.type).toMatch('application/json');
-// //     expect(response.status).toEqual(200);
-// //     //expect(response.body.length).toBeGreaterThan(0);
-// //   });
-
-// //   test('should called Genre.find', async () => {
-// //     await getAllGenres(mReq as Request, mRes as Response, mNext);
-// //     expect(mock).toHaveBeenCalled();
-// //   });
-
-// //   test('should return 200', async () => {
-// //     await getAllGenres(mReq, mRes, mNext);
-// //     expect(mRes.status).toHaveBeenCalledWith(200);
-// //     expect(mRes.send).toHaveBeenCalledWith(genreRecords);
-// //     expect(mNext).not.toHaveBeenCalled();
-// //   });
-
-// //   afterEach(() => {
-// //     mock.mockRestore();
-// //   });
-// // });
-
-// describe('POST /genres', () => {
-//   describe('create a genre with proper body', () => {
-//     test('should return 200', async () => {
-//       const body = {
-//         name: 'GenreName',
-//       };
-//       const response = await request(app).post('/genres').send(body);
-//       expect(response.status).toEqual(200);
-//       expect(response.body.name).toEqual('GenreName');
-//     });
-//   });
-//   describe('create a genre with invalid body', () => {
-//     test('should return 400', async () => {
-//       const body = {};
-//       const response = await request(app).post('/genres').send(body);
-//       console.log(response);
-//       console.log(response.status);
-//       expect(response.status).toEqual(400);
-//     });
-//   });
-// });
+describe('PUT /genres/:id', () => {
+  const updatedGenre = {
+    _id: genreId,
+    name: 'Updated genre',
+    __v: 0,
+  };
+  const newName = {
+    name: 'Updated genre',
+  };
+  describe('update a genre with proper request body and id', () => {
+    test('should return status code 200 and updated genre', async () => {
+      const mockUpdate = jest.spyOn(Genre, 'findByIdAndUpdate').mockReturnValueOnce(updatedGenre);
+      const { statusCode, body } = await supertest(app).put(`/genres/${genreId}`).send(newName);
+      expect(statusCode).toBe(200);
+      expect(mockUpdate).toBeCalledWith(genreId, newName, { new: true });
+      expect(body).toStrictEqual(updatedGenre);
+    });
+  });
+  describe('request with non-existent Id', () => {
+    test('should return status code 404', async () => {
+      const mockUpdate = jest.spyOn(Genre, 'findByIdAndUpdate');
+      const { statusCode } = await supertest(app).put(`/genres/${nonExistentId}`).send(newName);
+      expect(statusCode).toBe(404);
+      expect(mockUpdate).toBeCalledWith(nonExistentId, newName, { new: true });
+    });
+  });
+});
