@@ -1,7 +1,9 @@
 import swaggerUi from 'swagger-ui-express';
+
 import swaggerJsdoc from './swaggerConfig';
 import constants from './constants';
 import errorHandler from './middleware/errorHandler';
+import connectDB from './db/config';
 import connectDB from './db/config';
 import createServer from './utils/server';
 
