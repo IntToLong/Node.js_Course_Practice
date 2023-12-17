@@ -1,3 +1,10 @@
+# compiled output
 node_modules
 build
+
+# Tests
+jest.config.js
+/coverage
+
+# other
 .env

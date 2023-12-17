@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { genreController } from '../controllers/genre.controller';
+import { genreJoiSchema } from '../models/models.joi.validation';
+import validateResource from '../middleware/validateResource';
 
 const router: Router = Router();
 
@@ -62,7 +64,7 @@ const router: Router = Router();
  */
 
 // Create a new genre
-router.post('/genres', genreController.createGenre);
+router.post('/genres', validateResource(genreJoiSchema), genreController.createGenre);
 /**
  * @swagger
  * /genres:
@@ -160,7 +162,7 @@ router.get('/genres', genreController.getAllGenres);
  */
 
 // Update a genre
-router.put('/genres/:id', genreController.updateGenre);
+router.put('/genres/:id', validateResource(genreJoiSchema), genreController.updateGenre);
 
 /**
  * @swagger
@@ -184,10 +186,16 @@ router.put('/genres/:id', genreController.updateGenre);
  *             schema:
  *               type: object
  *               properties:
- *                 message:
+ *                 _id:
  *                   type: string
+ *                 name:
+ *                   type: string
+ *                 __v:
+ *                   type: number
  *               example:
- *                 message: "Genre deleted successfully."
+ *                 _id: "654f5c051aa0d0bfcba437d3"
+ *                 name: "Action"
+ *                 __v: 0
  *       '400':
  *         description: Invalid request.
  *       '500':
