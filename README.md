@@ -13,8 +13,8 @@ Node.js_Course_Practice is a comprehensive project that serves as a playground f
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/your-username/express-hw.git`
-2. Navigate to the project directory: `cd express-hw`
+1. Clone the repository: `git clone https://github.com/IntToLong/Node.js_Course_Practice.git`
+2. Navigate to the project directory: `cd Node.js_Course_Practice`
 3. Install dependencies: `npm install`
 
 ## Usage
